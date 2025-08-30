@@ -33,13 +33,15 @@ class WiFiManagerESP32 {
 
     void startAPMode();
     void startClientMode();
+    void sendCORSHeaders();
+    void handleCorsPreflight();
     void handleRoot();
     void handleSave();
     void handleReset();
     void handlePing();
     void handleCmd();
     void handleNotFound();
-    void handleRestApi();
+    void handleApp();
     void saveCredentials(const char* ssid, const char* password, const char* deviceName);
     bool loadCredentials(char* ssid, char* password, char* deviceName);
     void connectToWiFi(const char* ssid, const char* password);

@@ -172,10 +172,14 @@ const char saved_html[] PROGMEM = R"rawliteral(
   <style>
     body {
       font-family: Arial, sans-serif;
-      background:#f3f4f6;
+      background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
       margin:0;
       padding:0;
       min-height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      flex-direction:column;
     }
     .container {
       max-width:400px;
@@ -183,22 +187,31 @@ const char saved_html[] PROGMEM = R"rawliteral(
       padding:40px;
       background:#fff;
       border-radius:16px;
-      box-shadow:0 4px 10px rgba(0,0,0,0.1);
+      box-shadow:0 8px 20px rgba(0,0,0,0.1);
       text-align:center;
+      animation: fadein 0.5s ease-out;
+    }
+    .logo {
+      width:80%;
+      max-width:300px;
+      margin:0 auto 15px;
+    }
+    .success-icon {
+      font-size:60px;
+      color:#10b981;
+      margin-bottom:20px;
+      animation: pop 0.5s ease-out;
     }
     h2 {
       color:#111827;
       margin-bottom:20px;
-    }
-    .success-icon {
-      font-size:50px;
-      color:#10b981; /* grün */
-      margin-bottom:20px;
+      animation: fadein 0.6s ease-out;
     }
     p {
       color:#374151;
       font-size:16px;
       margin-bottom:20px;
+      animation: fadein 0.6s ease-out 0.2s;
     }
     .footer {
       position:fixed;
@@ -212,44 +225,303 @@ const char saved_html[] PROGMEM = R"rawliteral(
       background:transparent;
     }
     .footer .heart {color:#e11d48;}
+
+    @keyframes pop {
+      0% { transform: scale(0); opacity:0; }
+      70% { transform: scale(1.2); opacity:1; }
+      100% { transform: scale(1); }
+    }
+    @keyframes fadein {
+      0% { opacity:0; transform: translateY(-10px); }
+      100% { opacity:1; transform: translateY(0); }
+    }
+
     @media (prefers-color-scheme: dark){
-      body{background:#111827;color:#f9fafb;}
+      body{background: linear-gradient(135deg, #111827, #1f2937); color:#f9fafb;}
       .container{background:#1f2937;}
       h2{color:#f9fafb;}
       p{color:#d1d5db;}
       .footer{color:#9ca3af;}
     }
+
+    @media (max-width:420px){
+      .container { width:90%; padding:25px; }
+      .success-icon { font-size:50px; }
+      h2 { font-size:20px; }
+      p { font-size:14px; }
+    }
   </style>
 </head>
 <body>
   <div class="container">
+    <div class="logo">%SVG_LOGO%</div>
     <div class="success-icon">✅</div>
     <h2>Daten gespeichert</h2>
-    <p>Der ESP32 startet nun neu und verbindet sich mit deinem WLAN.</p>
+    <p>Der ESP32 startet nun neu und verbindet sich mit deinem WLAN.<br>Neustart in <span id="countdown">5</span> Sekunden...</p>
   </div>
   <div class="footer">
     Made with <span class="heart">♥</span> by Severin Holm (2025 hf-ict - IoT)
   </div>
+
+  <script>
+    let sec = 5;
+    const countdown = document.getElementById('countdown');
+    const interval = setInterval(() => {
+      sec--;
+      countdown.textContent = sec;
+      if(sec <= 0) clearInterval(interval);
+    }, 1000);
+  </script>
 </body>
 </html>
 )rawliteral";
 
-const char api_html[] PROGMEM = R"rawliteral(
+const char app_html[] PROGMEM = R"rawliteral(
 <!DOCTYPE html>
 <html lang="de">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ESP32 API</title>
+  <title>ESP32 Steuerung</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background:#f3f4f6;
+      margin:0;
+      padding:0;
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      flex-direction:column;
+    }
+    .container {
+      width:400px;
+      max-width:95%;
+      margin:40px auto 80px;
+      padding:40px;
+      background:#fff;
+      border-radius:16px;
+      box-shadow:0 8px 20px rgba(0,0,0,0.1);
+      text-align:center;
+    }
+    .logo {
+      width:80%;
+      max-width:300px;
+      margin:0 auto 15px;
+    }
+    .device-name {
+      font-size:22px; /* größer */
+      color:#374151;
+      margin-bottom:25px;
+      text-align:center; /* zentriert */
+    }
+
+    h2 {
+      font-size:20px; /* kleiner */
+      margin-bottom:15px;
+    }
+
+    .btn-row {
+      display:flex;
+      gap:15px;
+      margin-bottom:40px;
+    }
+    .btn-row button {
+      flex:1;
+      aspect-ratio:1/1;
+      font-size:18px;
+      border:none;
+      border-radius:16px;
+      background:linear-gradient(145deg, #3b82f6, #2563eb);
+      color:white;
+      cursor:pointer;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+      transition: transform 0.1s, box-shadow 0.2s, filter 0.2s;
+    }
+    .btn-row button:active {
+      transform: scale(0.95);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      filter: brightness(1.1);
+    }
+    .btn-row button:hover { filter: brightness(1.05); }
+
+    button.button-active { animation: blink 0.5s infinite; }
+
+    #btnReset {
+      display:block;
+      width:100%;
+      padding:15px;
+      margin:20px 0 0 0;
+      border:1px solid #d1d5db; 
+      border-radius:12px;
+      background:#f3f3f3;
+      color:#555;
+      cursor:pointer;
+      font-size:16px;
+      opacity:0.9;
+      transition: transform 0.1s, opacity 0.2s, filter 0.2s;
+    }
+    #btnReset:active { transform: scale(0.95); opacity:1; }
+    #btnReset:hover { filter: brightness(1.05); }
+
+    /* Confirm Container */
+    .confirm-container {
+      text-align:center; /* zentriert */
+      display:none;
+      position:relative;
+    }
+    .confirm-container p {
+      margin-bottom:25px;
+      color:#374151;
+      text-align:center; /* zentriert */
+    }
+    .btn-confirm {
+      width:100%;
+      padding:15px;
+      border:none;
+      border-radius:12px;
+      background:#ef4444;
+      color:white;
+      font-size:16px;
+      cursor:pointer;
+      margin-bottom:10px;
+      transition: filter 0.2s;
+    }
+    .btn-confirm:hover { filter: brightness(1.1); }
+
+    .btn-cancel {
+      width:100%;
+      padding:15px;
+      border:none;
+      border-radius:12px;
+      background:#3b82f6;
+      color:white;
+      font-size:16px;
+      cursor:pointer;
+      transition: filter 0.2s;
+    }
+    .btn-cancel:hover { filter: brightness(1.05); }
+
+    @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.5;} }
+
+    .footer {
+      position:fixed;
+      bottom:0;
+      left:0;
+      right:0;
+      text-align:center;
+      padding:10px;
+      font-size:14px;
+      color:#6b7280;
+      background:transparent;
+    }
+    .footer .heart {color:#e11d48;}
+    .success-icon {
+      font-size:50px;
+      color:#facc15;
+      margin-bottom:20px;
+      animation: pulse 1s ease-in-out infinite;
+    }
+
+    @keyframes pulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.2);} }
+
+    @media (prefers-color-scheme: dark){
+      body{background:#111827;color:#f9fafb;}
+      .container{background:#1f2937;}
+      .device-name{color:#d1d5db;}
+      .btn-row button{background:linear-gradient(145deg, #3b82f6, #2563eb);}
+      #btnReset{background:#1f2937;color:#d1d5db;border:1px solid #374151;}
+      .confirm-container p{color:#d1d5db;}
+      .btn-cancel{background:#2563eb;}
+      .footer{color:#9ca3af;}
+    }
+
+    @media (max-width: 420px) {
+      .container { width:90%; padding:25px; }
+      .btn-row button, #btnReset { font-size:16px; padding:12px; }
+    }
+  </style>
 </head>
 <body>
-  <h1>Willkommen zur ESP32 REST API</h1>
-  <p>Verfügbare Endpoints:</p>
-  <ul>
-    <li>/ping</li>
-    <li>/cmd</li>
-    <li>/reset</li>
-  </ul>
+  <div class="container" id="button-container">
+    <div class="logo">%SVG_LOGO%</div>
+    <div class="device-name">%DEVICE_NAME%</div>
+
+    <div class="main-buttons">
+      <div class="btn-row">
+        <button id="btn90" aria-label="Bewege Servo auf 90 Grad">90°</button>
+        <button id="btn180" aria-label="Bewege Servo auf 180 Grad">180°</button>
+      </div>
+      <button id="btnReset">Reset</button>
+    </div>
+
+    <!-- Confirm Container -->
+    <div class="confirm-container" id="confirm-container">
+      <h2>Gerät zurücksetzen!</h2>
+      <p>Sind Sie sicher, dass Sie das Gerät zurücksetzen möchten? Nach einem Reset muss dieses Gerät neu eingerichtet werden.</p>
+      <button class="btn-confirm" id="confirm-reset">Akzeptieren</button>
+      <button class="btn-cancel" id="cancel-reset">Abbrechen</button>
+    </div>
+  </div>
+
+  <div class="footer">
+    Made with <span class="heart">♥</span> by Severin Holm (2025 hf-ict - IoT)
+  </div>
+
+  <script>
+    const btn90 = document.getElementById('btn90');
+    const btn180 = document.getElementById('btn180');
+    const btnReset = document.getElementById('btnReset');
+    const container = document.getElementById('button-container');
+
+    const mainButtons = document.querySelector('.main-buttons');
+    const confirmContainer = document.getElementById('confirm-container');
+    const confirmReset = document.getElementById('confirm-reset');
+    const cancelReset = document.getElementById('cancel-reset');
+
+    function setupButton(button, actionDown, actionUp) {
+      function pressDown() {
+        fetch('/cmd?action=' + actionDown);
+        button.classList.add('button-active');
+      }
+      function pressUp() {
+        fetch('/cmd?action=' + actionUp);
+        button.classList.remove('button-active');
+      }
+
+      button.addEventListener('mousedown', pressDown);
+      button.addEventListener('touchstart', pressDown);
+      button.addEventListener('mouseup', pressUp);
+      button.addEventListener('touchend', pressUp);
+      button.addEventListener('mouseleave', pressUp);
+    }
+
+    setupButton(btn90, 'pos_90', 'pos_0');
+    setupButton(btn180, 'pos_180', 'pos_0');
+
+    btnReset.addEventListener('click', () => {
+      mainButtons.style.display = 'none';
+      confirmContainer.style.display = 'block';
+      document.querySelector('.device-name').style.display = 'none';
+    });
+
+    cancelReset.addEventListener('click', () => {
+      confirmContainer.style.display = 'none';
+      mainButtons.style.display = 'block';
+      document.querySelector('.device-name').style.display = 'block';
+    });
+
+    confirmReset.addEventListener('click', () => {
+      fetch('/reset').then(() => {
+        container.innerHTML = `
+          <div class="success-icon">⚠️</div>
+          <h2>Gerät wurde zurückgesetzt!</h2>
+          <p>Das Gerät muss neu eingerichtet werden.</p>
+        `;
+      });
+    });
+  </script>
 </body>
 </html>
 )rawliteral";

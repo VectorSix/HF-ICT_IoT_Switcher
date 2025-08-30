@@ -44,11 +44,23 @@ bool WiFiManagerESP32::isConnected() {
 void WiFiManagerESP32::startClientMode() {
     IPAddress myIP = WiFi.localIP();
     Serial.println("Start REST API Service");
-    server->on("/", std::bind(&WiFiManagerESP32::handleRestApi, this));
-    server->on("/reset", std::bind(&WiFiManagerESP32::handleReset, this));
+
+    // OPTIONS-Handler
+    server->on("/", HTTP_OPTIONS, std::bind(&WiFiManagerESP32::handleCorsPreflight, this));
+    server->on("/ping", HTTP_OPTIONS, std::bind(&WiFiManagerESP32::handleCorsPreflight, this));
+    server->on("/reset", HTTP_OPTIONS, std::bind(&WiFiManagerESP32::handleCorsPreflight, this));
+    server->on("/cmd", HTTP_OPTIONS, std::bind(&WiFiManagerESP32::handleCorsPreflight, this));
+
+    // GET/POST-Handler
+    server->on("/", std::bind(&WiFiManagerESP32::handleApp, this));
     server->on("/ping", std::bind(&WiFiManagerESP32::handlePing, this));
+    server->on("/reset", std::bind(&WiFiManagerESP32::handleReset, this));
     server->on("/cmd", std::bind(&WiFiManagerESP32::handleCmd, this));
-    server->onNotFound(std::bind(&WiFiManagerESP32::handleNotFound, this));
+
+    server->onNotFound([this]() {
+        sendCORSHeaders();
+        server->send(404, "application/json", "{\"error\":\"Route not found\"}");
+    });
 
     server->begin();
     Serial.print("REST API Service on http://");
@@ -94,6 +106,17 @@ void WiFiManagerESP32::startAPMode() {
     Serial.println("Captive Portal started. Connect to '" + ssid + "'.");
 }
 
+void WiFiManagerESP32::sendCORSHeaders() {
+    server->sendHeader("Access-Control-Allow-Origin", "*");
+    server->sendHeader("Access-Control-Allow-Methods", "GET,POST,PUT,OPTIONS");
+    server->sendHeader("Access-Control-Allow-Headers", "*");
+}
+
+void WiFiManagerESP32::handleCorsPreflight() {
+    sendCORSHeaders();
+    server->send(204);  // No Content
+}
+
 void WiFiManagerESP32::handleCaptivePortal(String uri) {
     Serial.println("Captive Portal Request: " + uri);
     if (uri == "/connecttest.txt" || uri == "/ncsi.txt" ||
@@ -123,7 +146,8 @@ void WiFiManagerESP32::handleRoot() {
 }
 
 void WiFiManagerESP32::handleSave() {
-    String page(saved_html);    
+    String page(saved_html);
+    page.replace("%SVG_LOGO%", FPSTR(svg_logo));
     if (!server->hasArg("ssid") || !server->hasArg("pass") || !server->hasArg("device")) {
         server->send(400, "text/html", "Error Reading SSID, password, or devicename");
         return;
@@ -137,6 +161,8 @@ void WiFiManagerESP32::handleSave() {
 }
 
 void WiFiManagerESP32::handleReset() {
+    sendCORSHeaders();
+    if (server->method() == HTTP_OPTIONS) return;
     Serial.println("Resetting EEPROM and WiFi credentials...");
     for (int i = 0; i < EEPROM_SIZE; i++) {
         EEPROM.write(i, 0xFF);
@@ -148,15 +174,17 @@ void WiFiManagerESP32::handleReset() {
 }
 
 void WiFiManagerESP32::handlePing() {
+    sendCORSHeaders();
     IPAddress ip = WiFi.localIP();
     String device = deviceName.length() ? deviceName : "esp32-d2";
     String json = "{";
     json += "\"ip\":\"" + ip.toString() + "\",";
-    json += "\"device\":\"" + device + "\"";
+    json += "\"device\":\"" + device + "\"}";
     server->send(200, "application/json", json);
 }
 
 void WiFiManagerESP32::handleCmd() {
+    sendCORSHeaders();
     if (cmdCallback) {
         cmdCallback(*server);
     } else {
@@ -165,11 +193,16 @@ void WiFiManagerESP32::handleCmd() {
 }
 
 void WiFiManagerESP32::handleNotFound() {
+    sendCORSHeaders();
     server->send(404, "application/json", "{\"error\":\"Route not found\"}");
 }
 
-void WiFiManagerESP32::handleRestApi() {
-    server->send(200, "text/html", FPSTR(api_html));
+void WiFiManagerESP32::handleApp() {
+    sendCORSHeaders();
+    String page(app_html);
+    page.replace("%SVG_LOGO%", FPSTR(svg_logo));
+    page.replace("%DEVICE_NAME%", deviceName);
+    server->send(200, "text/html", page);
 }
 
 void WiFiManagerESP32::setCmdCallback(CmdCallback cb) { 
