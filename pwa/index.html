@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meine PWA</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="manifest" href="assets/pwa/manifest.json">
+    <meta name="theme-color" content="#007bff">
+</head>
+<body>
+    <h1>Willkommen zu meiner PWA!</h1>
+    <button id="alertBtn">Klick mich</button>
+    <script src="assets/js/app.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('assets/pwa/service-worker.js')
+            .then(() => console.log('Service Worker registriert'))
+            .catch(err => console.error('Service Worker Fehler:', err));
+        }
+    </script>
+</body>
+</html>

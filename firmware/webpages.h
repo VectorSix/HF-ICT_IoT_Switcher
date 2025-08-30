@@ -64,6 +64,7 @@ const char index_html[] PROGMEM = R"rawliteral(
     }
     select,
     input[type=password],
+    input[type=text],
     button {
       display:block;
       width:100%;
@@ -112,6 +113,11 @@ const char index_html[] PROGMEM = R"rawliteral(
       h2{color:#f9fafb;}
       label{color:#d1d5db;}
       select,
+      input[type=text]{
+        background:#111827;
+        color:#f9fafb;
+        border:1px solid #374151;
+      }
       input[type=password]{
         background:#111827;
         color:#f9fafb;
@@ -135,6 +141,8 @@ const char index_html[] PROGMEM = R"rawliteral(
 
     <h2>WLAN konfigurieren</h2>
     <form action="/save" method="POST">
+      <label for="device">Device Name</label>
+      <input type="text" id="device" name="device" placeholder="Name des Geräts" minlength="5" maxlength="64" required>
       <label for="ssid">SSID auswählen</label>
       <select name="ssid" id="ssid">
         %SSID_OPTIONS%
@@ -222,6 +230,26 @@ const char saved_html[] PROGMEM = R"rawliteral(
   <div class="footer">
     Made with <span class="heart">♥</span> by Severin Holm (2025 hf-ict - IoT)
   </div>
+</body>
+</html>
+)rawliteral";
+
+const char api_html[] PROGMEM = R"rawliteral(
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ESP32 API</title>
+</head>
+<body>
+  <h1>Willkommen zur ESP32 REST API</h1>
+  <p>Verfügbare Endpoints:</p>
+  <ul>
+    <li>/ping</li>
+    <li>/cmd</li>
+    <li>/reset</li>
+  </ul>
 </body>
 </html>
 )rawliteral";
