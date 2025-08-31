@@ -1,0 +1,15 @@
+{
+  "name": "IoT-Switcher Firmware",
+   "description": "Flash ESP32 Dev Module over Webbrowser",
+  "builds": [
+    {
+      "chipFamily": "ESP32",
+      "parts": [
+        {
+          "path": "https://hfict.severin-holm.ch/firmware/firmware.bin",
+          "offset": 0
+        }
+      ]
+    }
+  ]
+}

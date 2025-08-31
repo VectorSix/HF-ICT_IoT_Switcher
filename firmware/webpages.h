@@ -26,86 +26,92 @@ const char index_html[] PROGMEM = R"rawliteral(
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WiFi Setup</title>
   <style>
-    body {
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
       font-family: Arial, sans-serif;
-      background:#f3f4f6;
-      margin:0;
-      padding:0;
-      min-height:100vh;
+      background: #f3f4f6;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
     }
     .container {
-      max-width:400px;
-      margin:40px auto 80px; /* unten etwas mehr Platz wegen Footer */
-      padding:40px;
-      background:#fff;
-      border-radius:16px;
-      box-shadow:0 4px 10px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+      padding: 40px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      box-sizing: border-box;
+      text-align: center;
     }
     .logo {
-      display:block;
-      margin:0 auto 40px;
-      width:100%;
-      height:auto;
+      display: block;
+      margin: 0 auto 40px;
+      width: 100%;
+      height: auto;
     }
     h2 {
-      text-align:center;
-      color:#111827;
+      text-align: center;
+      color: #111827;
     }
     form {
       margin-bottom: 10px;
     }
     label {
-      display:block;
-      margin-top:15px;
-      margin-bottom:5px;
-      font-weight:600;
-      color:#374151;
-      text-align:left;
+      display: block;
+      margin-top: 15px;
+      margin-bottom: 5px;
+      font-weight: 600;
+      color: #374151;
+      text-align: left;
     }
     select,
     input[type=password],
     input[type=text],
     button {
-      display:block;
-      width:100%;
-      margin-top:8px;
-      padding:10px;
-      border:1px solid #d1d5db;
-      border-radius:8px;
-      font-size:16px;
-      box-sizing:border-box;
+      display: block;
+      width: 100%;
+      margin-top: 8px;
+      padding: 10px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 16px;
+      box-sizing: border-box;
     }
     select {
-      appearance:none;
-      -webkit-appearance:none;
-      -moz-appearance:none;
-      background:#fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="%23374151" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 5 7 10 12 5"/></svg>') no-repeat right 12px center;
-      background-size:14px;
-      padding-right:32px;
-      cursor:pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background: #fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="%23374151" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 5 7 10 12 5"/></svg>') no-repeat right 12px center;
+      background-size: 14px;
+      padding-right: 32px;
+      cursor: pointer;
     }
     button {
-      margin-top:20px;
-      background:#3b82f6;
-      color:#fff;
-      font-weight:600;
-      border:none;
-      cursor:pointer;
-      padding:12px;
+      margin-top: 20px;
+      background: #3b82f6;
+      color: #fff;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      padding: 12px;
     }
     .footer {
-      position:fixed;
-      bottom:0;
-      left:0;
-      right:0;
-      text-align:center;
-      padding:10px;
-      font-size:14px;
-      color:#6b7280; /* dezentes Grau im Lightmode */
-      background:transparent;
+      margin-top: 20px;
+      text-align: center;
+      padding: 10px;
+      font-size: 14px;
+      color: #6b7280;
+      width: 100%;
+      background: transparent;
     }
     .footer .heart {
-      color:#e11d48; /* Rot fürs Herz */
+      color: #e11d48;
     }
     @media (prefers-color-scheme: dark){
       body{background:#111827;color:#f9fafb;}
@@ -113,11 +119,7 @@ const char index_html[] PROGMEM = R"rawliteral(
       h2{color:#f9fafb;}
       label{color:#d1d5db;}
       select,
-      input[type=text]{
-        background:#111827;
-        color:#f9fafb;
-        border:1px solid #374151;
-      }
+      input[type=text],
       input[type=password]{
         background:#111827;
         color:#f9fafb;
@@ -128,13 +130,12 @@ const char index_html[] PROGMEM = R"rawliteral(
         background-size:14px;
       }
       button{background:#2563eb;}
-      .footer {color:#9ca3af;} /* helleres Grau im Darkmode */
+      .footer {color:#9ca3af;}
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- Logo -->
     <div class="logo">
       %SVG_LOGO%
     </div>
@@ -161,7 +162,7 @@ const char index_html[] PROGMEM = R"rawliteral(
 )rawliteral";
 
 
-// Captive Portal
+// Captive Portal Save
 const char saved_html[] PROGMEM = R"rawliteral(
 <!DOCTYPE html>
 <html lang="de">
@@ -170,61 +171,61 @@ const char saved_html[] PROGMEM = R"rawliteral(
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WiFi Setup – Gespeichert</title>
   <style>
-    body {
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
       font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
-      margin:0;
-      padding:0;
-      min-height:100vh;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      flex-direction:column;
+      background: #f3f4f6;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
     }
     .container {
-      max-width:400px;
-      margin:40px auto 80px;
-      padding:40px;
-      background:#fff;
-      border-radius:16px;
-      box-shadow:0 8px 20px rgba(0,0,0,0.1);
-      text-align:center;
+      max-width: 400px;
+      width: 100%;
+      padding: 40px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      text-align: center;
       animation: fadein 0.5s ease-out;
+      box-sizing: border-box;
     }
     .logo {
-      width:80%;
-      max-width:300px;
-      margin:0 auto 15px;
+      width: 80%;
+      max-width: 300px;
+      margin: 0 auto 15px;
     }
     .success-icon {
-      font-size:60px;
-      color:#10b981;
-      margin-bottom:20px;
+      font-size: 60px;
+      color: #10b981;
+      margin-bottom: 20px;
       animation: pop 0.5s ease-out;
     }
     h2 {
-      color:#111827;
-      margin-bottom:20px;
+      color: #111827;
+      margin-bottom: 20px;
       animation: fadein 0.6s ease-out;
     }
     p {
-      color:#374151;
-      font-size:16px;
-      margin-bottom:20px;
+      color: #374151;
+      font-size: 16px;
+      margin-bottom: 20px;
       animation: fadein 0.6s ease-out 0.2s;
     }
     .footer {
-      position:fixed;
-      bottom:0;
-      left:0;
-      right:0;
-      text-align:center;
-      padding:10px;
-      font-size:14px;
-      color:#6b7280;
-      background:transparent;
+      margin-top: 20px;
+      text-align: center;
+      padding: 10px;
+      font-size: 14px;
+      color: #6b7280;
+      background: transparent;
     }
-    .footer .heart {color:#e11d48;}
+    .footer .heart {color: #e11d48;}
 
     @keyframes pop {
       0% { transform: scale(0); opacity:0; }
@@ -253,23 +254,32 @@ const char saved_html[] PROGMEM = R"rawliteral(
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="container" id="container">
     <div class="logo">%SVG_LOGO%</div>
     <div class="success-icon">✅</div>
     <h2>Daten gespeichert</h2>
-    <p>Der ESP32 startet nun neu und verbindet sich mit deinem WLAN.<br>Neustart in <span id="countdown">5</span> Sekunden...</p>
+    <p>Der ESP32 startet nun neu und verbindet sich mit deinem WLAN.<br>Neustart in <span id="countdown">10</span> Sekunden...</p>
   </div>
   <div class="footer">
     Made with <span class="heart">♥</span> by Severin Holm (2025 hf-ict - IoT)
   </div>
 
   <script>
-    let sec = 5;
+    let sec = 10;
     const countdown = document.getElementById('countdown');
+    const container = document.getElementById('container');
+
     const interval = setInterval(() => {
       sec--;
       countdown.textContent = sec;
-      if(sec <= 0) clearInterval(interval);
+      if(sec <= 0) {
+        clearInterval(interval);
+        container.innerHTML = `
+          <div class="success-icon">🎉</div>
+          <h2>Konfiguration abgeschlossen!</h2>
+          <p>Bitte loggen Sie sich wieder in das korrekte WiFi-Netz ein.</p>
+        `;
+      }
     }, 1000);
   </script>
 </body>
@@ -284,12 +294,15 @@ const char app_html[] PROGMEM = R"rawliteral(
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ESP32 Steuerung</title>
   <style>
+    html, body {
+      height:100%;
+      margin:0;
+      padding:0;
+      overflow:hidden;
+    }
     body {
       font-family: Arial, sans-serif;
       background:#f3f4f6;
-      margin:0;
-      padding:0;
-      min-height:100vh;
       display:flex;
       justify-content:center;
       align-items:center;
@@ -298,12 +311,12 @@ const char app_html[] PROGMEM = R"rawliteral(
     .container {
       width:400px;
       max-width:95%;
-      margin:40px auto 80px;
       padding:40px;
       background:#fff;
       border-radius:16px;
       box-shadow:0 8px 20px rgba(0,0,0,0.1);
       text-align:center;
+      box-sizing:border-box;
     }
     .logo {
       width:80%;
@@ -311,17 +324,13 @@ const char app_html[] PROGMEM = R"rawliteral(
       margin:0 auto 15px;
     }
     .device-name {
-      font-size:22px; /* größer */
+      font-size:22px;
       color:#374151;
       margin-bottom:25px;
-      text-align:center; /* zentriert */
+      text-align:center;
+      user-select:none;
     }
-
-    h2 {
-      font-size:20px; /* kleiner */
-      margin-bottom:15px;
-    }
-
+    h2 { font-size:20px; margin-bottom:15px; }
     .btn-row {
       display:flex;
       gap:15px;
@@ -336,45 +345,44 @@ const char app_html[] PROGMEM = R"rawliteral(
       background:linear-gradient(145deg, #3b82f6, #2563eb);
       color:white;
       cursor:pointer;
-      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-      transition: transform 0.1s, box-shadow 0.2s, filter 0.2s;
+      box-shadow:0 6px 12px rgba(0,0,0,0.15);
+      transition:transform 0.1s, box-shadow 0.2s, filter 0.2s;
+      user-select:none;
+      -webkit-touch-callout:none;
     }
     .btn-row button:active {
-      transform: scale(0.95);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      filter: brightness(1.1);
+      transform:scale(0.95);
+      box-shadow:0 4px 8px rgba(0,0,0,0.2);
+      filter:brightness(1.1);
     }
-    .btn-row button:hover { filter: brightness(1.05); }
-
+    .btn-row button:hover { filter:brightness(1.05); }
     button.button-active { animation: blink 0.5s infinite; }
-
     #btnReset {
       display:block;
       width:100%;
       padding:15px;
       margin:20px 0 0 0;
-      border:1px solid #d1d5db; 
+      border:1px solid #d1d5db;
       border-radius:12px;
       background:#f3f3f3;
       color:#555;
       cursor:pointer;
       font-size:16px;
       opacity:0.9;
-      transition: transform 0.1s, opacity 0.2s, filter 0.2s;
+      transition:transform 0.1s, opacity 0.2s, filter 0.2s;
+      user-select:none;
     }
-    #btnReset:active { transform: scale(0.95); opacity:1; }
-    #btnReset:hover { filter: brightness(1.05); }
-
-    /* Confirm Container */
+    #btnReset:active { transform:scale(0.95); opacity:1; }
+    #btnReset:hover { filter:brightness(1.05); }
     .confirm-container {
-      text-align:center; /* zentriert */
+      text-align:center;
       display:none;
       position:relative;
     }
     .confirm-container p {
       margin-bottom:25px;
       color:#374151;
-      text-align:center; /* zentriert */
+      text-align:center;
     }
     .btn-confirm {
       width:100%;
@@ -386,10 +394,9 @@ const char app_html[] PROGMEM = R"rawliteral(
       font-size:16px;
       cursor:pointer;
       margin-bottom:10px;
-      transition: filter 0.2s;
+      transition:filter 0.2s;
     }
-    .btn-confirm:hover { filter: brightness(1.1); }
-
+    .btn-confirm:hover { filter:brightness(1.1); }
     .btn-cancel {
       width:100%;
       padding:15px;
@@ -399,19 +406,13 @@ const char app_html[] PROGMEM = R"rawliteral(
       color:white;
       font-size:16px;
       cursor:pointer;
-      transition: filter 0.2s;
+      transition:filter 0.2s;
     }
-    .btn-cancel:hover { filter: brightness(1.05); }
-
+    .btn-cancel:hover { filter:brightness(1.05); }
     @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.5;} }
-
     .footer {
-      position:fixed;
-      bottom:0;
-      left:0;
-      right:0;
+      margin-top:30px;
       text-align:center;
-      padding:10px;
       font-size:14px;
       color:#6b7280;
       background:transparent;
@@ -421,25 +422,21 @@ const char app_html[] PROGMEM = R"rawliteral(
       font-size:50px;
       color:#facc15;
       margin-bottom:20px;
-      animation: pulse 1s ease-in-out infinite;
+      animation:pulse 1s ease-in-out infinite;
     }
-
     @keyframes pulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.2);} }
-
     @media (prefers-color-scheme: dark){
       body{background:#111827;color:#f9fafb;}
       .container{background:#1f2937;}
       .device-name{color:#d1d5db;}
-      .btn-row button{background:linear-gradient(145deg, #3b82f6, #2563eb);}
       #btnReset{background:#1f2937;color:#d1d5db;border:1px solid #374151;}
       .confirm-container p{color:#d1d5db;}
       .btn-cancel{background:#2563eb;}
       .footer{color:#9ca3af;}
     }
-
-    @media (max-width: 420px) {
-      .container { width:90%; padding:25px; }
-      .btn-row button, #btnReset { font-size:16px; padding:12px; }
+    @media (max-width:420px){
+      .container{width:90%;padding:25px;}
+      .btn-row button, #btnReset{font-size:16px;padding:12px;}
     }
   </style>
 </head>
@@ -456,7 +453,6 @@ const char app_html[] PROGMEM = R"rawliteral(
       <button id="btnReset">Reset</button>
     </div>
 
-    <!-- Confirm Container -->
     <div class="confirm-container" id="confirm-container">
       <h2>Gerät zurücksetzen!</h2>
       <p>Sind Sie sicher, dass Sie das Gerät zurücksetzen möchten? Nach einem Reset muss dieses Gerät neu eingerichtet werden.</p>
@@ -474,7 +470,6 @@ const char app_html[] PROGMEM = R"rawliteral(
     const btn180 = document.getElementById('btn180');
     const btnReset = document.getElementById('btnReset');
     const container = document.getElementById('button-container');
-
     const mainButtons = document.querySelector('.main-buttons');
     const confirmContainer = document.getElementById('confirm-container');
     const confirmReset = document.getElementById('confirm-reset');
@@ -489,12 +484,12 @@ const char app_html[] PROGMEM = R"rawliteral(
         fetch('/cmd?action=' + actionUp);
         button.classList.remove('button-active');
       }
-
       button.addEventListener('mousedown', pressDown);
       button.addEventListener('touchstart', pressDown);
       button.addEventListener('mouseup', pressUp);
       button.addEventListener('touchend', pressUp);
       button.addEventListener('mouseleave', pressUp);
+      button.addEventListener('contextmenu', e => e.preventDefault());
     }
 
     setupButton(btn90, 'pos_90', 'pos_0');
@@ -505,13 +500,11 @@ const char app_html[] PROGMEM = R"rawliteral(
       confirmContainer.style.display = 'block';
       document.querySelector('.device-name').style.display = 'none';
     });
-
     cancelReset.addEventListener('click', () => {
       confirmContainer.style.display = 'none';
       mainButtons.style.display = 'block';
       document.querySelector('.device-name').style.display = 'block';
     });
-
     confirmReset.addEventListener('click', () => {
       fetch('/reset').then(() => {
         container.innerHTML = `

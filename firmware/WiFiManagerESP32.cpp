@@ -1,6 +1,7 @@
 #include "WiFiManagerESP32.h"
 #include "webpages.h"
 #include "esp_netif.h"
+#include "esp_wifi.h"
 
 WiFiManagerESP32::WiFiManagerESP32() {
     server = new WebServer(80);
@@ -20,15 +21,17 @@ void WiFiManagerESP32::begin() {
     if (loadCredentials(storedSsid, storedPass, storedDevice)) {
         deviceName = storedDevice;
         Serial.println("Found WiFi-Credentials, Connecting...");
+        WiFi.disconnect(true, true); 
+        WiFi.softAPdisconnect(true);
+        WiFi.mode(WIFI_STA);      
         connectToWiFi(storedSsid, storedPass);
-
         unsigned long start = millis();
         while (WiFi.status() != WL_CONNECTED && millis() - start < 10000) {
             delay(500);
             Serial.print(".");
         }
         if (WiFi.status() == WL_CONNECTED) {            
-            Serial.println("\nWifi successfully connected!");
+            Serial.println("\nWifi successfully connected!");       
             startClientMode();
             return;
         }

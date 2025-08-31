@@ -1,0 +1,101 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  font-family: Arial, sans-serif;
+  background: #f3f4f6; /* Hellgrau für Light Mode */
+  overflow: hidden;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.container {
+  width: 100%;
+  max-width: 400px;
+  padding: 40px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.logo {
+  display: block;
+  margin: 0 auto 40px;
+  width: 100%;
+  height: auto;
+  text-align: center;
+}
+
+h2 {
+  text-align: center;
+  color: #111827;
+}
+
+button, esp-web-install-button {
+  display: block;
+  width: 100%;
+  margin-top: 20px;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  box-sizing: border-box;
+  cursor: pointer;
+  text-align: center;
+}
+
+esp-web-install-button {
+  color: #fff;
+  border: none;
+}
+
+.console {
+  margin-top: 20px;
+}
+
+.footer {
+  margin-top: 25px;
+  text-align: center;
+  padding: 10px;
+  font-size: 14px;
+  color: #6b7280;
+  width: 100%;
+  background: transparent;
+}
+
+.footer .heart {
+  color: #e11d48;
+}
+
+.styledBtn {
+  width: 100%;
+  padding: 16px 0;
+  border-radius: 16px;
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
+  background: linear-gradient(145deg, #3b82f6, #2563eb);
+  border: none;
+  cursor: pointer;
+  text-align: center;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+  transition: transform 0.1s, box-shadow 0.2s, filter 0.2s;
+}
+
+.styledBtn:hover { filter: brightness(1.05); }
+.styledBtn:active { transform: scale(0.95); box-shadow: 0 4px 8px rgba(0,0,0,0.2); filter: brightness(1.1); }
+
+@media (prefers-color-scheme: dark) {
+  body { background: #111827; color: #f9fafb; }
+  .container { background: #1f2937; }
+  h2 { color: #f9fafb; }
+  .footer { color: #9ca3af; }
+}

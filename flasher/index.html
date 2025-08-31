@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <title>Firmware Flash Tool</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script type="module" src="https://unpkg.com/esp-web-tools@latest/dist/web/install-button.js"></script>
+  <script src="assets/js/app.js" defer></script>
+</head>
+<body>
+  <div class="container">
+    <!-- Logo -->
+    <div class="logo">
+      <img src="assets/img/logo.png" alt="Logo" style="width: 100%;">
+    </div>
+
+    <h2>Firmware Tools</h2>
+
+    <!-- Flash Button -->
+    <esp-web-install-button manifest="firmware/manifest.json" style="display:none;" id="espButton"></esp-web-install-button>
+    <button id="myFlashBtn" class="styledBtn">⚡ Flash Firmware ⚡</button>
+
+    <!-- Konsole -->
+    <div class="console">
+      <esp-web-install-console></esp-web-install-console>
+    </div>
+  </div>
+
+  <div class="footer">
+    Made with <span class="heart">♥</span> by Severin Holm (2025 hf-ict - IoT)
+  </div>
+</body>
+</html>
