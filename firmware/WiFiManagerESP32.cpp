@@ -241,6 +241,20 @@ void WiFiManagerESP32::connectToWiFi(const char* ssid, const char* password) {
 }
 
 void WiFiManagerESP32::process() {
+    // Connection Handler
     if (!isConnected()) dns.processNextRequest();
     server->handleClient();
+
+    // Serial Handler
+    if (Serial.available() > 0) {
+        String command = Serial.readStringUntil('\n');
+        command.trim();
+        if (command == "GET_IP") {
+            if (WiFi.status() == WL_CONNECTED) {
+                Serial.println(WiFi.localIP().toString());
+            } else {
+                Serial.println("NOT_CONNECTED");
+            }
+        }
+    }
 }

@@ -6,7 +6,7 @@
       "chipFamily": "ESP32",
       "parts": [
         {
-          "path": "https://hfict.severin-holm.ch/firmware/firmware.bin",
+          "path": "https://hfict.severin-holm.ch/assets/devices/iot_switcher/firmware/firmware.bin",
           "offset": 0
         }
       ]
