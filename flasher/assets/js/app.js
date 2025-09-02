@@ -10,9 +10,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const devices = [
     { id: "switcher", name: "IoT Switcher", version: "1.2.0", folder: "iot_switcher", ap_ssid: "⚡ IoT-Switcher Setup ⚡" },
+    /*
     { id: "sensor",  name: "IoT Sensor",    version: "0.9.5", folder: "iot_sensor",   ap_ssid: "⚡ IoT-Sensor Setup ⚡" },
     { id: "light",   name: "IoT Light Controller", version: "2.0.1", folder: "iot_light",  ap_ssid: "⚡ IoT-Light Setup ⚡" },
     { id: "gateway", name: "IoT Gateway",   version: "1.0.0", folder: "iot_gateway",  ap_ssid: "⚡ IoT-Gateway Setup ⚡" }
+    */
   ];
 
   const steps = [
